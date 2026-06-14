@@ -1,0 +1,12 @@
+# Secrets — NEVER commit. The real OpenAI key lives here.
+.env
+.env.local
+.env.*.local
+
+# Dependencies (none required, but just in case)
+node_modules/
+
+# OS / editor noise
+.DS_Store
+*.log
+.claude/launch.json

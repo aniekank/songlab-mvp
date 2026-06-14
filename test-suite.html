@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SongLab Test Suite</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #171817;
+        --muted: #626861;
+        --line: #d9ddd5;
+        --lime: #e2f1af;
+        --green: #44745b;
+        --red: #c45d40;
+        --paper: #fbfbf1;
+        --panel: #ffffff;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background:
+          linear-gradient(135deg, rgba(226, 241, 175, 0.28), transparent 30rem),
+          var(--paper);
+        color: var(--ink);
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      main {
+        display: grid;
+        gap: 1rem;
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 1rem;
+      }
+
+      header,
+      section {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.86);
+        box-shadow: 0 18px 46px rgba(23, 24, 23, 0.08);
+      }
+
+      header {
+        display: grid;
+        gap: 0.75rem;
+        padding: 1rem;
+      }
+
+      h1,
+      h2,
+      p {
+        margin: 0;
+      }
+
+      h1 {
+        font-size: clamp(1.8rem, 4vw, 3rem);
+        line-height: 1;
+      }
+
+      p {
+        color: var(--muted);
+        line-height: 1.45;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.65rem;
+      }
+
+      button {
+        min-height: 2.65rem;
+        padding: 0 1rem;
+        border: 0;
+        border-radius: 8px;
+        background: var(--lime);
+        color: var(--ink);
+        font: inherit;
+        font-weight: 850;
+        cursor: pointer;
+      }
+
+      button.secondary {
+        border: 1px solid var(--line);
+        background: #fff;
+      }
+
+      button:disabled {
+        cursor: not-allowed;
+        opacity: 0.55;
+      }
+
+      .suite-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+        gap: 1rem;
+      }
+
+      .results {
+        display: grid;
+        gap: 0.55rem;
+        padding: 1rem;
+      }
+
+      .result {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        gap: 0.65rem;
+        align-items: start;
+        padding: 0.7rem;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+      }
+
+      .status {
+        display: inline-grid;
+        place-items: center;
+        min-width: 4.6rem;
+        min-height: 1.8rem;
+        border-radius: 999px;
+        background: #eef5d5;
+        color: var(--green);
+        font-size: 0.78rem;
+        font-weight: 900;
+      }
+
+      .result.fail .status {
+        background: #ffe5dc;
+        color: var(--red);
+      }
+
+      .result.warn .status {
+        background: #fff0bd;
+        color: #7a5c12;
+      }
+
+      .result strong {
+        display: block;
+        margin-bottom: 0.15rem;
+      }
+
+      .frame-wrap {
+        display: grid;
+        gap: 0.5rem;
+        padding: 1rem;
+      }
+
+      iframe {
+        width: 100%;
+        min-height: 680px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+      }
+
+      code {
+        padding: 0.1rem 0.25rem;
+        border-radius: 4px;
+        background: #eef5d5;
+      }
+
+      @media (max-width: 920px) {
+        .suite-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <div>
+          <p>SongLab QA</p>
+          <h1>Browser Smoke Test Suite</h1>
+        </div>
+        <p>
+          This page runs lightweight checks against the local SongLab app. It does not replace the manual QA plan, but it quickly catches broken navigation, theme switching, create workflow regressions, lyric assistant failures, glossary search problems, and reference rendering issues.
+        </p>
+        <div class="actions">
+          <button id="runTests" type="button">Run Smoke Tests</button>
+          <button class="secondary" id="resetStorage" type="button">Clear App Storage</button>
+          <button class="secondary" id="openApp" type="button">Open App</button>
+        </div>
+      </header>
+
+      <div class="suite-grid">
+        <section class="results" aria-live="polite">
+          <h2>Results</h2>
+          <p id="summary">Tests have not run yet.</p>
+          <div id="results"></div>
+        </section>
+
+        <section class="frame-wrap">
+          <h2>Test Target</h2>
+          <p>The app is loaded below from <code>index.html</code>.</p>
+          <iframe id="appFrame" src="./index.html" title="SongLab app under test"></iframe>
+        </section>
+      </div>
+    </main>
+
+    <script>
+      const frame = document.querySelector("#appFrame");
+      const results = document.querySelector("#results");
+      const summary = document.querySelector("#summary");
+      const runButton = document.querySelector("#runTests");
+
+      const wait = (ms = 80) => new Promise((resolve) => window.setTimeout(resolve, ms));
+
+      function appWindow() {
+        return frame.contentWindow;
+      }
+
+      function appDocument() {
+        return frame.contentDocument || frame.contentWindow.document;
+      }
+
+      async function waitForApp() {
+        if (appDocument().readyState === "complete") {
+          await wait(120);
+          return;
+        }
+        await new Promise((resolve) => frame.addEventListener("load", resolve, { once: true }));
+        await wait(120);
+      }
+
+      function click(selector, root = appDocument()) {
+        const element = root.querySelector(selector);
+        if (!element) throw new Error(`Missing clickable selector: ${selector}`);
+        element.click();
+        return wait();
+      }
+
+      function input(selector, value, root = appDocument()) {
+        const element = root.querySelector(selector);
+        if (!element) throw new Error(`Missing input selector: ${selector}`);
+        element.value = value;
+        element.dispatchEvent(new Event("input", { bubbles: true }));
+        element.dispatchEvent(new Event("change", { bubbles: true }));
+        return wait();
+      }
+
+      function select(selector, value, root = appDocument()) {
+        const element = root.querySelector(selector);
+        if (!element) throw new Error(`Missing select selector: ${selector}`);
+        element.value = value;
+        element.dispatchEvent(new Event("change", { bubbles: true }));
+        return wait();
+      }
+
+      function visible(selector, root = appDocument()) {
+        const element = root.querySelector(selector);
+        if (!element) return false;
+        const style = appWindow().getComputedStyle(element);
+        return style.display !== "none" && style.visibility !== "hidden" && !element.hidden;
+      }
+
+      function text(selector, root = appDocument()) {
+        const element = root.querySelector(selector);
+        return element ? element.textContent.replace(/\s+/g, " ").trim() : "";
+      }
+
+      function localStorageHas(key) {
+        return Boolean(appWindow().localStorage.getItem(key));
+      }
+
+      function addResult(name, status, detail = "") {
+        const article = document.createElement("article");
+        article.className = `result ${status === "fail" ? "fail" : status === "warn" ? "warn" : ""}`;
+        article.innerHTML = `
+          <span class="status">${status.toUpperCase()}</span>
+          <div>
+            <strong>${name}</strong>
+            <p>${detail}</p>
+          </div>
+        `;
+        results.appendChild(article);
+      }
+
+      async function runTest(name, fn) {
+        try {
+          const detail = await fn();
+          addResult(name, "pass", detail || "Passed.");
+          return true;
+        } catch (error) {
+          addResult(name, "fail", error.message || String(error));
+          return false;
+        }
+      }
+
+      async function runSmokeTests() {
+        runButton.disabled = true;
+        results.innerHTML = "";
+        summary.textContent = "Running tests...";
+        await waitForApp();
+
+        const tests = [
+          ["App shell renders", async () => {
+            const doc = appDocument();
+            if (!doc.querySelector(".app-shell")) throw new Error("Missing app shell.");
+            if (doc.querySelectorAll("[data-app-mode]").length !== 3) throw new Error("Expected three app mode buttons.");
+            if (!doc.querySelector("#laneSelect")) throw new Error("Missing workflow dropdown.");
+            return "Shell, app modes, and workflow selector are present.";
+          }],
+          ["Global app modes switch", async () => {
+            await click('[data-app-mode="producer"]');
+            if (appDocument().body.dataset.activeMode !== "producer") throw new Error("Producer mode did not activate.");
+            if (!visible('[data-view="audio"]')) throw new Error("Audio nav should be visible in Producer mode.");
+            await click('[data-app-mode="artist"]');
+            if (appDocument().body.dataset.activeMode !== "artist") throw new Error("Artist mode did not activate.");
+            await click('[data-app-mode="songwriter"]');
+            if (appDocument().body.dataset.activeMode !== "songwriter") throw new Error("Songwriter mode did not activate.");
+            return "Songwriter, Producer, and Artist modes activate.";
+          }],
+          ["Workflow themes and mood labels switch", async () => {
+            await select("#laneSelect", "Drill");
+            if (appDocument().body.dataset.workflow !== "drill") throw new Error("Drill workflow slug did not apply.");
+            if (!text("#workflowMoodLabel").includes("Drill")) throw new Error("Mood label did not update to Drill.");
+            const railBackground = appWindow().getComputedStyle(appDocument().querySelector(".rail")).backgroundImage;
+            if (!railBackground || railBackground === "none") throw new Error("Rail theme background missing.");
+            await select("#laneSelect", "Country");
+            if (appDocument().body.dataset.workflow !== "country") throw new Error("Country workflow slug did not apply.");
+            return "Genre selector updates body theme and mood label.";
+          }],
+          ["Create route panels switch", async () => {
+            await click('[data-view="create"]');
+            for (const mode of ["start", "flow", "record", "write", "shape"]) {
+              await click(`[data-create-mode="${mode}"]`);
+              const grid = appDocument().querySelector("#createRoomGrid");
+              if (!grid || grid.dataset.createMode !== mode) throw new Error(`Create mode did not switch to ${mode}.`);
+            }
+            return "Start, Flow, Record, Write, and Shape routes activate.";
+          }],
+          ["Flow capture writes to capture list", async () => {
+            await click('[data-view="create"]');
+            await click('[data-create-mode="flow"]');
+            await input("#flowCaptureInput", "blue porch light test phrase");
+            await click("#flowCaptureMoment");
+            if (!text("#flowCaptureList").includes("blue porch light test phrase")) throw new Error("Flow capture did not appear in list.");
+            return "Flow capture appears in the capture list.";
+          }],
+          ["Lyric assistant generates and sends to pad", async () => {
+            await click('[data-create-mode="write"]');
+            await input("#createConcept", "A late-night apology trying to sound confident.");
+            await input("#createHook", "Say it before the morning");
+            await click("#generateLyricIdeas");
+            if (!text("#lyricSuggestionOutput").includes("Song Sparks")) throw new Error("Lyric suggestions did not render as song sparks.");
+            if (!text("#lyricSuggestionOutput").includes("Make it yours")) throw new Error("Creator-facing rewrite note missing.");
+            await click("#sendLyricIdeasToPad");
+            const pad = appDocument().querySelector("#createFreewrite");
+            if (!pad.value.includes("Make it yours")) throw new Error("Lyric starter note was not sent to pad.");
+            return "Suggestions render and append to the notebook.";
+          }],
+          ["Vocal designer generates a take plan", async () => {
+            await click('[data-create-mode="record"]');
+            await select("#vocalSection", "Hook");
+            await select("#stackStyle", "Harmony pad");
+            await select("#performanceEmotion", "Urgent");
+            await click("#generateVocalPlan");
+            if (!text("#vocalPlanOutput").includes("Lead Take")) throw new Error("Vocal plan did not render.");
+            await click("#sendVocalPlanToPad");
+            if (!appDocument().querySelector("#takeDeliveryNotes").value.includes("vocal plan")) throw new Error("Vocal plan did not reach delivery notes.");
+            return "Vocal plan renders and sends into the take notes.";
+          }],
+          ["Shape timing responds to BPM and bars", async () => {
+            await click('[data-create-mode="shape"]');
+            await input("#createBpm", "100");
+            const firstBars = appDocument().querySelector("[data-create-bars]");
+            if (!firstBars) throw new Error("No section bar field found.");
+            firstBars.value = "12";
+            firstBars.dispatchEvent(new Event("input", { bubbles: true }));
+            await wait();
+            const summaryText = text("#barTimingSummary");
+            if (!summaryText.includes("100 BPM")) throw new Error("Timing summary did not reflect BPM.");
+            if (!text("#createStructureScore").includes("bars")) throw new Error("Structure score did not show bars.");
+            return "BPM and bar controls update structure timing.";
+          }],
+          ["Glossary search filters terms", async () => {
+            await click('[data-view="glossary"]');
+            await input("#glossarySearch", "hook");
+            const glossaryText = text("#glossaryResults");
+            if (!glossaryText.toLowerCase().includes("hook")) throw new Error("Glossary results did not include hook.");
+            return "Glossary search returns matching terms.";
+          }],
+          ["Song Doctor renders repair command center", async () => {
+            await click('[data-view="doctor"]');
+            await click("#doctorForm button[type='submit']");
+            const output = text("#diagnosisOutput");
+            if (!output.includes("Primary diagnosis")) throw new Error("Primary diagnosis section missing.");
+            if (!output.includes("Repair paths")) throw new Error("Repair path section missing.");
+            if (appDocument().querySelectorAll("[data-doctor-route]").length < 3) throw new Error("Expected at least three repair route buttons.");
+            await click('[data-doctor-route="hooks"]');
+            if (appDocument().body.dataset.activeView !== "hooks") throw new Error("Hook repair route did not open Hook Sprint.");
+            return "Doctor output renders and repair routing works.";
+          }],
+          ["Pro streaming references render", async () => {
+            await click('[data-app-mode="producer"]');
+            await click('[data-view="pros"]');
+            const panelText = text(".stream-reference-panel");
+            if (!panelText) throw new Error("Streaming reference panel is empty.");
+            const embeds = Array.from(appDocument().querySelectorAll(".stream-reference-panel iframe")).map((item) => item.src).filter(Boolean);
+            const hasYoutubeNoCookie = embeds.some((src) => src.includes("youtube-nocookie.com"));
+            const hasExternalLinks = appDocument().querySelectorAll('.stream-reference-panel a[href*="youtube.com"], .stream-reference-panel a[href*="youtu.be"], .stream-reference-panel a[href*="spotify.com"], .stream-reference-panel a[href*="music.apple.com"]').length > 0;
+            if (!hasYoutubeNoCookie && !hasExternalLinks) throw new Error("No streaming embed or external streaming link found.");
+            const slots = appDocument().querySelectorAll(".suggested-slot");
+            const actionGroups = appDocument().querySelectorAll(".suggested-slot .slot-provider-actions");
+            if (slots.length && actionGroups.length !== slots.length) throw new Error("Every suggested slot should have provider actions.");
+            return "Streaming reference area renders embeds or provider actions for every slot.";
+          }],
+          ["Audio Lab estimates BPM", async () => {
+            await click('[data-app-mode="producer"]');
+            await click('[data-view="audio"]');
+            await click("#loadDemoGroove");
+            await wait(900);
+            const readout = text("#trackBpm");
+            if (!/\d+\s*BPM/.test(readout)) throw new Error(`No BPM estimate shown: ${readout}`);
+            return `BPM readout appears: ${readout}.`;
+          }],
+          ["Local persistence keys are created", async () => {
+            await click('[data-view="create"]');
+            await click('[data-create-mode="write"]');
+            await input("#createTitle", "Smoke Test Song");
+            if (!localStorageHas("songlabCreationDraft")) throw new Error("Creation draft key missing.");
+            if (!localStorageHas("songlabAppMode")) throw new Error("App mode key missing.");
+            return "Core localStorage keys exist.";
+          }],
+          ["No console errors during smoke run", async () => {
+            const errors = appWindow().__songLabSmokeErrors || [];
+            if (errors.length) throw new Error(errors.slice(0, 3).join(" | "));
+            return "No captured console errors.";
+          }],
+        ];
+
+        appWindow().__songLabSmokeErrors = [];
+        appWindow().addEventListener("error", (event) => {
+          appWindow().__songLabSmokeErrors.push(event.message);
+        });
+
+        let passed = 0;
+        for (const [name, fn] of tests) {
+          const ok = await runTest(name, fn);
+          if (ok) passed += 1;
+        }
+        summary.textContent = `${passed}/${tests.length} smoke tests passed. Use docs/TEST_PLAN.md for the full manual QA suite.`;
+        runButton.disabled = false;
+      }
+
+      document.querySelector("#runTests").addEventListener("click", runSmokeTests);
+      document.querySelector("#resetStorage").addEventListener("click", async () => {
+        await waitForApp();
+        appWindow().localStorage.clear();
+        frame.src = "./index.html";
+        summary.textContent = "App storage cleared and target reloaded.";
+        results.innerHTML = "";
+      });
+      document.querySelector("#openApp").addEventListener("click", () => {
+        window.open("./index.html", "_blank", "noopener");
+      });
+    </script>
+  </body>
+</html>

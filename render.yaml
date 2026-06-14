@@ -1,0 +1,14 @@
+# Render blueprint for the SongLab MVP.
+# Deploys the Node server in safe "no key" mode:
+#   - No OPENAI_API_KEY is set, so AI analysis falls back to local heuristics
+#     and NO billing can occur from public traffic.
+#   - Everything else (playbooks, craft loop, progressive disclosure, audio UI)
+#     runs fully.
+services:
+  - type: web
+    name: songlab-mvp
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    # Intentionally NO OPENAI_API_KEY here. Do not add one to a public demo.

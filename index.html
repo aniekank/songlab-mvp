@@ -1,0 +1,1536 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SongLab OS</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <svg class="svg-defs" aria-hidden="true">
+      <symbol id="icon-grid" viewBox="0 0 24 24">
+        <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
+        <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
+        <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
+        <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
+      </symbol>
+      <symbol id="icon-wave" viewBox="0 0 24 24">
+        <path d="M3 12h2.4l1.8-5 3.7 12 2.8-14 2.7 9h4.6"></path>
+      </symbol>
+      <symbol id="icon-headphones" viewBox="0 0 24 24">
+        <path d="M4 14v-2a8 8 0 0 1 16 0v2"></path>
+        <path d="M4 14h3v7H4z"></path>
+        <path d="M17 14h3v7h-3z"></path>
+      </symbol>
+      <symbol id="icon-skip-back" viewBox="0 0 24 24">
+        <path d="M11 6l-7 6 7 6V6z"></path>
+        <path d="M20 6l-7 6 7 6V6z"></path>
+      </symbol>
+      <symbol id="icon-skip-forward" viewBox="0 0 24 24">
+        <path d="M13 6l7 6-7 6V6z"></path>
+        <path d="M4 6l7 6-7 6V6z"></path>
+      </symbol>
+      <symbol id="icon-upload" viewBox="0 0 24 24">
+        <path d="M12 16V4"></path>
+        <path d="M7 9l5-5 5 5"></path>
+        <path d="M4 20h16"></path>
+      </symbol>
+      <symbol id="icon-flag" viewBox="0 0 24 24">
+        <path d="M5 21V4"></path>
+        <path d="M5 4h12l-1 5 1 5H5"></path>
+      </symbol>
+      <symbol id="icon-stethoscope" viewBox="0 0 24 24">
+        <path d="M6 3v5a4 4 0 0 0 8 0V3"></path>
+        <path d="M10 15a5 5 0 0 0 10 0v-2"></path>
+        <circle cx="20" cy="10" r="2"></circle>
+      </symbol>
+      <symbol id="icon-repeat" viewBox="0 0 24 24">
+        <path d="M17 2l4 4-4 4"></path>
+        <path d="M3 11V9a3 3 0 0 1 3-3h15"></path>
+        <path d="M7 22l-4-4 4-4"></path>
+        <path d="M21 13v2a3 3 0 0 1-3 3H3"></path>
+      </symbol>
+      <symbol id="icon-bookmark" viewBox="0 0 24 24">
+        <path d="M6 3h12v18l-6-4-6 4z"></path>
+      </symbol>
+      <symbol id="icon-play" viewBox="0 0 24 24">
+        <path d="M7 4l13 8-13 8z"></path>
+      </symbol>
+      <symbol id="icon-pause" viewBox="0 0 24 24">
+        <path d="M8 5v14"></path>
+        <path d="M16 5v14"></path>
+      </symbol>
+      <symbol id="icon-plus" viewBox="0 0 24 24">
+        <path d="M12 5v14"></path>
+        <path d="M5 12h14"></path>
+      </symbol>
+      <symbol id="icon-spark" viewBox="0 0 24 24">
+        <path d="M12 2l1.5 6.5L20 10l-6.5 1.5L12 18l-1.5-6.5L4 10l6.5-1.5z"></path>
+        <path d="M19 16l.8 3.2L23 20l-3.2.8L19 24l-.8-3.2L15 20l3.2-.8z"></path>
+      </symbol>
+      <symbol id="icon-save" viewBox="0 0 24 24">
+        <path d="M5 3h12l2 2v16H5z"></path>
+        <path d="M8 3v7h8V3"></path>
+        <path d="M8 21v-6h8v6"></path>
+      </symbol>
+      <symbol id="icon-sliders" viewBox="0 0 24 24">
+        <path d="M4 6h16"></path>
+        <path d="M4 12h16"></path>
+        <path d="M4 18h16"></path>
+        <circle cx="9" cy="6" r="2"></circle>
+        <circle cx="15" cy="12" r="2"></circle>
+        <circle cx="7" cy="18" r="2"></circle>
+      </symbol>
+      <symbol id="icon-award" viewBox="0 0 24 24">
+        <circle cx="12" cy="8" r="5"></circle>
+        <path d="M8.5 12.5L7 22l5-3 5 3-1.5-9.5"></path>
+      </symbol>
+      <symbol id="icon-pen" viewBox="0 0 24 24">
+        <path d="M4 20h4l11-11a2.8 2.8 0 0 0-4-4L4 16v4z"></path>
+        <path d="M13.5 6.5l4 4"></path>
+      </symbol>
+      <symbol id="icon-mic" viewBox="0 0 24 24">
+        <path d="M12 14a4 4 0 0 0 4-4V6a4 4 0 0 0-8 0v4a4 4 0 0 0 4 4z"></path>
+        <path d="M19 10a7 7 0 0 1-14 0"></path>
+        <path d="M12 17v4"></path>
+        <path d="M8 21h8"></path>
+      </symbol>
+    </svg>
+
+    <div class="app-shell">
+      <aside class="rail" aria-label="Primary navigation">
+        <div class="brand">
+          <div class="brand-mark">SL</div>
+          <div>
+            <strong>SongLab</strong>
+            <span id="brandModeLabel">songwriter OS</span>
+          </div>
+        </div>
+
+        <div class="mode-switcher" aria-label="App mode">
+          <button class="is-active" type="button" data-app-mode="songwriter">Songwriter</button>
+          <button type="button" data-app-mode="producer">Producer</button>
+          <button type="button" data-app-mode="artist">Artist</button>
+          <button type="button" data-app-mode="engineer">Engineer</button>
+        </div>
+
+        <section class="rail-session-controls" aria-label="Session setup">
+          <span class="nav-section-label">Session</span>
+          <div class="topbar-field topbar-field-level">
+            <label class="select-label" for="proficiencySelect">Level</label>
+            <select id="proficiencySelect" aria-label="Musical proficiency level">
+              <option value="starter">Starter</option>
+              <option value="simple">Simple</option>
+              <option value="standard" selected>Standard</option>
+              <option value="deep">Deep</option>
+            </select>
+          </div>
+          <div class="topbar-field topbar-field-workflow">
+            <label class="select-label" for="laneSelect">Workflow</label>
+            <select id="laneSelect">
+              <option>R&B</option>
+              <option>Soul</option>
+              <option>Neo-Soul</option>
+              <option>Pop</option>
+              <option>Dance-Pop</option>
+              <option>Singer-Songwriter Pop</option>
+              <option>Alt-Pop</option>
+              <option>Pop-R&B</option>
+              <option>Hip-Hop</option>
+              <option>Melodic Rap</option>
+              <option>Drill</option>
+              <option>Country</option>
+              <option>Gospel</option>
+              <option>Alternative</option>
+              <option>Rock & Roll</option>
+              <option>Classic Rock</option>
+              <option>Punk Rock</option>
+              <option>Grunge</option>
+              <option>Pop-Punk/Emo</option>
+            </select>
+          </div>
+          <button class="rail-save-button" id="saveSession" type="button">
+            <svg><use href="#icon-save"></use></svg>
+            <span>Save Session</span>
+          </button>
+        </section>
+
+        <nav class="nav-list">
+          <span class="nav-section-label">Studio</span>
+          <button class="nav-item is-active" data-view="dashboard" data-modes="songwriter producer artist engineer" type="button">
+            <svg><use href="#icon-grid"></use></svg>
+            Home
+          </button>
+          <button class="nav-item" data-view="create" data-modes="songwriter producer artist" type="button">
+            <svg><use href="#icon-pen"></use></svg>
+            Create
+          </button>
+          <button class="nav-item" data-view="workshop" data-modes="songwriter producer artist engineer" type="button">
+            <svg><use href="#icon-spark"></use></svg>
+            Workshop
+          </button>
+          <span class="nav-section-label">Learn</span>
+          <button class="nav-item" data-view="pros" data-modes="producer songwriter engineer" type="button">
+            <svg><use href="#icon-award"></use></svg>
+            Pro Playbook
+          </button>
+          <button class="nav-item" data-view="cases" data-modes="producer songwriter engineer" type="button">
+            <svg><use href="#icon-wave"></use></svg>
+            Case Studies
+          </button>
+          <button class="nav-item" data-view="risk" data-modes="producer songwriter artist engineer" type="button">
+            <svg><use href="#icon-spark"></use></svg>
+            Creative Risk Lab
+          </button>
+          <button class="nav-item" data-view="session" data-modes="producer songwriter artist engineer" type="button">
+            <svg><use href="#icon-sliders"></use></svg>
+            Session Greats
+          </button>
+          <button class="nav-item" data-view="glossary" data-modes="songwriter producer artist engineer" type="button">
+            <svg><use href="#icon-bookmark"></use></svg>
+            Glossary
+          </button>
+          <span class="nav-section-label">Tools</span>
+          <button class="nav-item" data-view="audio" data-modes="producer artist engineer" type="button">
+            <svg><use href="#icon-headphones"></use></svg>
+            Audio Lab
+          </button>
+          <button class="nav-item" data-view="mixguide" data-modes="engineer producer" type="button">
+            <svg><use href="#icon-sliders"></use></svg>
+            Mix Guide
+          </button>
+          <button class="nav-item" data-view="analyst" data-modes="songwriter producer artist engineer" type="button">
+            <svg><use href="#icon-sliders"></use></svg>
+            AI Analyst
+          </button>
+          <button class="nav-item" data-view="doctor" data-modes="songwriter producer artist engineer" type="button">
+            <svg><use href="#icon-stethoscope"></use></svg>
+            Song Doctor
+          </button>
+          <button class="nav-item" data-view="hooks" data-modes="songwriter producer artist" type="button">
+            <svg><use href="#icon-repeat"></use></svg>
+            Hook Sprint
+          </button>
+          <button class="nav-item" data-view="vault" data-modes="songwriter producer artist engineer" type="button">
+            <svg><use href="#icon-bookmark"></use></svg>
+            Reference Vault
+          </button>
+        </nav>
+      </aside>
+
+      <main class="workspace">
+        <header class="topbar">
+          <div>
+            <h1 id="viewTitle">Home</h1>
+            <small class="workflow-mood-label" id="workflowMoodLabel">R&B room</small>
+          </div>
+          <div class="global-player" aria-label="Global playback controls">
+            <div class="global-player-meta">
+              <strong id="globalTrackName">No beat loaded</strong>
+              <span id="globalTrackTime">0:00 / 0:00</span>
+            </div>
+            <input id="globalSeek" class="global-seek" type="range" min="0" max="0" step="0.01" value="0" aria-label="Playback timeline" />
+            <div class="global-transport">
+              <button class="player-icon-button" id="globalBackFive" type="button" aria-label="Rewind 5 seconds">
+                <svg><use href="#icon-skip-back"></use></svg>
+              </button>
+              <button class="player-main-button" id="globalPlayPause" type="button" aria-label="Play">
+                <svg><use href="#icon-play"></use></svg>
+              </button>
+              <button class="player-icon-button" id="globalForwardFive" type="button" aria-label="Fast forward 5 seconds">
+                <svg><use href="#icon-skip-forward"></use></svg>
+              </button>
+              <button class="player-icon-button" id="globalLoopToggle" type="button" aria-label="Toggle loop">
+                <svg><use href="#icon-repeat"></use></svg>
+              </button>
+            </div>
+          </div>
+        </header>
+
+        <section class="view is-active" id="dashboard" aria-labelledby="viewTitle">
+          <div class="dashboard-grid">
+            <section class="command-panel">
+              <img src="assets/studio-case-study.png" alt="Illustrated music production desk with songwriting notes and waveform timeline" />
+              <div class="command-copy">
+                <span class="eyebrow" id="dashboardModeEyebrow">Today&apos;s mission</span>
+                <h2 id="dashboardModeTitle">Turn one strong loop into a replayable song.</h2>
+                <p id="dashboardModeCopy">Pick a case study, diagnose your idea, write three hooks, then save the reference moves worth stealing.</p>
+                <div class="button-row" id="modeHeroActions"></div>
+              </div>
+            </section>
+
+            <section class="studio-session-strip" aria-label="Current session">
+              <article>
+                <span>Mode</span>
+                <strong id="sessionModeLabel">Songwriter</strong>
+              </article>
+              <article>
+                <span>Genre</span>
+                <strong id="sessionGenreLabel">R&amp;B</strong>
+              </article>
+              <article>
+                <span>Audio</span>
+                <strong id="sessionAudioLabel">No track loaded</strong>
+              </article>
+              <article>
+                <span>Tempo</span>
+                <strong id="sessionTempoLabel">BPM pending</strong>
+              </article>
+              <article>
+                <span>Focus</span>
+                <strong id="sessionFocusLabel">Start the session</strong>
+              </article>
+            </section>
+
+            <section class="tool-panel mode-pathway-panel">
+              <div class="panel-heading">
+                <div>
+                  <span class="eyebrow" id="modePathEyebrow">Mode map</span>
+                  <h2 id="modePathTitle">Choose a lane</h2>
+                </div>
+              </div>
+              <p id="modePathCopy"></p>
+              <div class="mode-pathway-grid" id="modePathwayGrid"></div>
+            </section>
+
+            <section class="tool-panel studio-flow-panel">
+              <div class="panel-heading">
+                <div>
+                  <span class="eyebrow" id="flowPanelEyebrow">Guided studio flow</span>
+                  <h2 id="flowPanelTitle">Do the next useful thing</h2>
+                </div>
+                <span class="score-pill" id="flowScore">0/5</span>
+              </div>
+              <div class="flow-gate-list" id="flowGateList"></div>
+            </section>
+
+            <section class="tool-panel dashboard-support-panel">
+              <div class="panel-heading">
+                <div>
+                  <span class="eyebrow">Studio queue</span>
+                  <h2>Next best moves</h2>
+                </div>
+                <button class="ghost-button" id="shuffleQueue" type="button">
+                  <svg><use href="#icon-spark"></use></svg>
+                  Refresh
+                </button>
+              </div>
+              <div class="queue-list" id="queueList"></div>
+            </section>
+
+            <section class="tool-panel dashboard-support-panel dashboard-readiness-panel">
+              <div class="panel-heading">
+                <div>
+                  <span class="eyebrow">Six pillars</span>
+                  <h2>Song readiness</h2>
+                </div>
+                <button class="ghost-button" data-view-jump="doctor" type="button">
+                  <svg><use href="#icon-sliders"></use></svg>
+                  Adjust
+                </button>
+              </div>
+              <div class="pillar-grid" id="pillarGrid"></div>
+            </section>
+          </div>
+        </section>
+
+        <section class="view" id="create" aria-labelledby="viewTitle">
+          <div class="create-workflow-shell">
+            <section class="create-mode-bar" aria-label="Create workflow">
+              <button class="create-mode-card is-active" type="button" data-create-mode="start">
+                <span>01</span>
+                <strong>Start</strong>
+                <small>Beat + workflow</small>
+              </button>
+              <button class="create-mode-card" type="button" data-create-mode="flow">
+                <span>02</span>
+                <strong>Flow</strong>
+                <small>Catch ideas</small>
+              </button>
+              <button class="create-mode-card" type="button" data-create-mode="record">
+                <span>03</span>
+                <strong>Record</strong>
+                <small>Sketch takes</small>
+              </button>
+              <button class="create-mode-card" type="button" data-create-mode="write">
+                <span>04</span>
+                <strong>Write</strong>
+                <small>Notebook</small>
+              </button>
+              <button class="create-mode-card" type="button" data-create-mode="shape">
+                <span>05</span>
+                <strong>Shape</strong>
+                <small>Structure</small>
+              </button>
+            </section>
+
+            <div class="create-route-summary" id="createRouteSummary"></div>
+
+            <div class="create-room-grid is-routed" id="createRoomGrid">
+            <section class="tool-panel create-player-panel" data-create-panel="player">
+              <div class="panel-heading">
+                <div>
+                  <span class="eyebrow">Creation room</span>
+                  <h2>Loop the beat, write the song</h2>
+                </div>
+                <span class="score-pill" id="createLoopStatus">Loop On</span>
+              </div>
+
+              <label class="upload-zone create-upload-zone" for="createBeatInput">
+                <input id="createBeatInput" type="file" accept="audio/*" />
+                <span class="upload-icon"><svg><use href="#icon-upload"></use></svg></span>
+                <span>
+                  <strong>Upload beat</strong>
+                  <small>Playback loops locally while you write.</small>
+                </span>
+              </label>
+
+              <audio id="createBeatAudio" preload="metadata" loop></audio>
+
+              <div class="create-focus-grid">
+                <article>
+                  <span>1</span>
+                  <strong>Find the title</strong>
+                  <p>Write the phrase the listener should leave with.</p>
+                </article>
+                <article>
+                  <span>2</span>
+                  <strong>Lock the hook job</strong>
+                  <p>Name what the chorus resolves emotionally.</p>
+                </article>
+                <article>
+                  <span>3</span>
+                  <strong>Shape the sections</strong>
+                  <p>Give each return a new reason to stay.</p>
+                </article>
+              </div>
+            </section>
+
+            <section class="tool-panel take-recorder-panel" data-create-panel="record">
+              <div class="panel-heading">
+                <div>
+                  <span class="eyebrow">Take recorder</span>
+                  <h2>Record the sketch</h2>
+                </div>
+                <span class="score-pill" id="takeRecorderStatus">Ready</span>
+              </div>
+
+              <div class="take-transport-row">
+                <button class="primary-action" id="startSketchRecording" type="button">
+                  <svg><use href="#icon-mic"></use></svg>
+                  Record
+                </button>
+                <button class="secondary-action" id="stopSketchRecording" type="button" disabled>
+                  <svg><use href="#icon-pause"></use></svg>
+                  Stop
+                </button>
+              </div>
+
+              <div class="take-monitor">
+                <div class="take-timer">
+                  <span>Take time</span>
+                  <strong id="takeRecordingTime">00:00</strong>
+                </div>
+                <div class="take-meter" aria-label="Microphone input level">
+                  <span id="takeMeterBar"></span>
+                </div>
+                <div class="transcript-status" id="transcriptStatus">
+                  <span></span>
+                  <strong>Checking transcript support</strong>
+                </div>
+                <p id="takeRecorderHint">Arm the mic, play the beat, then catch the melody, flow, or delivery idea before editing it.</p>
+              </div>
+
+              <div class="take-current">
+                <div>
+                  <span class="eyebrow">Current take</span>
+                  <strong id="currentTakeName">No take loaded</strong>
+                </div>
+                <audio id="takePlayback" class="take-playback" controls></audio>
+              </div>
+
+              <label>
+                Transcript
+                <textarea id="takeTranscript" class="take-transcript" rows="5" placeholder="Live transcript appears here when supported. You can also type the take manually."></textarea>
+              </label>
+
+              <label>
+                Delivery notes
+                <textarea id="takeDeliveryNotes" rows="3" placeholder="rushed hook, better second pass, strong title, flat ending..."></textarea>
+              </label>
+
+              <section class="vocal-designer-panel" aria-label="Vocal layering and performance planner">
+                <div class="lyric-ai-head">
+                  <div>
+                    <span class="eyebrow">Vocal designer</span>
+                    <h3>Layering and performance map</h3>
+                  </div>
+                  <span class="score-pill">Take plan</span>
+                </div>
+                <div class="vocal-guide-deck" id="vocalGuideDeck"></div>
+                <div class="vocal-designer-grid">
+                  <label>
+                    Section
+                    <select id="vocalSection">
+                      <option>Hook</option>
+                      <option>Verse</option>
+                      <option>Pre-chorus</option>
+                      <option>Bridge</option>
+                      <option>Vamp</option>
+                      <option>Ad-lib pass</option>
+                    </select>
+                  </label>
+                  <label>
+                    Lead delivery
+                    <select id="leadDelivery">
+                      <option>Close and intimate</option>
+                      <option>Conversational</option>
+                      <option>Confident and bright</option>
+                      <option>Breathy and restrained</option>
+                      <option>Rap pocket</option>
+                      <option>Full voice</option>
+                    </select>
+                  </label>
+                  <label>
+                    Stack style
+                    <select id="stackStyle">
+                      <option>Doubles</option>
+                      <option>No stack</option>
+                      <option>Octave support</option>
+                      <option>Call and response</option>
+                      <option>Harmony pad</option>
+                      <option>Gang response</option>
+                      <option>Choir lift</option>
+                    </select>
+                  </label>
+                  <label>
+                    Harmony density
+                    <select id="harmonyDensity">
+                      <option>Light</option>
+                      <option>None</option>
+                      <option>Medium</option>
+                      <option>Lush</option>
+                      <option>Final-hook wide</option>
+                    </select>
+                  </label>
+                  <label>
+                    Ad-lib intensity
+                    <select id="adlibIntensity">
+                      <option>Medium</option>
+                      <option>None</option>
+                      <option>Low</option>
+                      <option>High</option>
+                      <option>Final-run heavy</option>
+                    </select>
+                  </label>
+                  <label>
+                    Emotion
+                    <select id="performanceEmotion">
+                      <option>Intimate</option>
+                      <option>Urgent</option>
+                      <option>Wounded</option>
+                      <option>Cold</option>
+                      <option>Joyful</option>
+                      <option>Triumphant</option>
+                    </select>
+                  </label>
+                </div>
+                <div class="take-action-row">
+                  <button class="primary-action" id="generateVocalPlan" type="button">
+                    <svg><use href="#icon-mic"></use></svg>
+                    Design Take
+                  </button>
+                  <button class="secondary-action" id="sendVocalPlanToPad" type="button">
+                    <svg><use href="#icon-pen"></use></svg>
+                    Send to Pad
+                  </button>
+                </div>
+                <div class="vocal-plan-output" id="vocalPlanOutput">
+                  <span class="tag">No plan yet</span>
+                  <p>Choose a section and performance direction, then design the vocal stack.</p>
+                </div>
+              </section>
+
+              <div class="take-action-row">
+                <button class="secondary-action" id="sendTakeTranscript" type="button">
+                  <svg><use href="#icon-bookmark"></use></svg>
+                  Send to Pad
+                </button>
+                <button class="secondary-action" id="gradeSketchTake" type="button">
+                  <svg><use href="#icon-award"></use></svg>
+                  Grade Take
+                </button>
+              </div>
+
+              <div class="take-grade-output" id="takeGradeOutput">
+                <span class="tag">No grade yet</span>
+                <p>Record or paste a transcript, then grade the performance.</p>
+              </div>
+
+              <div class="take-list" id="takeList"></div>
+            </section>
+
+            <section class="tool-panel create-notebook-panel" data-create-panel="notebook">
+              <div class="panel-heading">
+                <div>
+                  <span class="eyebrow">Songwriting scribe</span>
+                  <h2>Open notebook</h2>
+                </div>
+                <span class="score-pill" id="createDraftStatus">Autosaved</span>
+              </div>
+
+              <div class="create-meta-grid">
+                <label>
+                  Working title
+                  <input id="createTitle" type="text" placeholder="Untitled idea" />
+                </label>
+                <label>
+                  Key / tempo
+                  <input id="createTempoKey" type="text" placeholder="A minor / 92 BPM" />
+                </label>
+              </div>
+
+              <label>
+                One-sentence concept
+                <textarea id="createConcept" rows="3" placeholder="A song about..."></textarea>
+              </label>
+
+              <label>
+                Hook target
+                <textarea id="createHook" rows="3" placeholder="Title phrase, chorus payoff, or chant idea"></textarea>
+              </label>
+
+              <section class="lyric-ai-panel" aria-label="Lyric starter assistant">
+                <div class="lyric-ai-head">
+                  <div>
+                    <span class="eyebrow">Song sparks</span>
+                    <h3>Find the line, then make it sing</h3>
+                  </div>
+                  <span class="score-pill">Voice sketch</span>
+                </div>
+                <div class="lyric-ai-controls">
+                  <label>
+                    Section
+                    <select id="lyricAiSection">
+                      <option>Hook</option>
+                      <option>Verse</option>
+                      <option>Pre-chorus</option>
+                      <option>Bridge</option>
+                      <option>Vamp</option>
+                      <option>Ad-lib</option>
+                    </select>
+                  </label>
+                  <label>
+                    Tone
+                    <select id="lyricAiTone">
+                      <option>Intimate</option>
+                      <option>Bold</option>
+                      <option>Bitter</option>
+                      <option>Hopeful</option>
+                      <option>Seductive</option>
+                      <option>Reflective</option>
+                      <option>Cold</option>
+                      <option>Uplifted</option>
+                    </select>
+                  </label>
+                </div>
+                <div class="lyric-ai-actions">
+                  <button class="primary-action" id="generateLyricIdeas" type="button">
+                    <svg><use href="#icon-spark"></use></svg>
+                    Spark Lines
+                  </button>
+                  <button class="secondary-action" id="sendLyricIdeasToPad" type="button">
+                    <svg><use href="#icon-pen"></use></svg>
+                    Send to Pad
+                  </button>
+                </div>
+                <div class="lyric-suggestion-output" id="lyricSuggestionOutput">
+                  <span class="tag">Ready</span>
+                  <p>Start with a spark, then bend every word toward your own voice.</p>
+                </div>
+              </section>
+
+              <label>
+                Free-write page
+                <textarea id="createFreewrite" class="scribe-page" rows="14" placeholder="Mumble syllables, lyric fragments, scene notes, artist direction, ad-lib ideas..."></textarea>
+              </label>
+
+              <div class="create-action-row">
+                <button class="primary-action" id="saveCreationDraft" type="button">
+                  <svg><use href="#icon-save"></use></svg>
+                  Save Draft
+                </button>
+                <button class="secondary-action" id="sendCreationDoctor" type="button">
+                  <svg><use href="#icon-stethoscope"></use></svg>
+                  Doctor It
+                </button>
+                <button class="secondary-action" id="saveCreationVault" type="button">
+                  <svg><use href="#icon-bookmark"></use></svg>
+                  Save to Vault
+                </button>
+              </div>
+            </section>
+
+            <section class="tool-panel flow-writing-panel" data-create-panel="flow">
+              <div class="panel-heading">
+                <div>
+                  <span class="eyebrow">Flow deck</span>
+                  <h2>Catch the take</h2>
+                </div>
+                <span class="score-pill" id="flowCaptureCount">0 captures</span>
+              </div>
+
+              <div class="flow-workspace">
+                <div class="flow-prompt-card" id="flowPromptCard"></div>
+
+                <label class="flow-scratch-pad">
+                  Scratch pad
+                  <textarea id="flowCaptureInput" class="flow-capture-input" rows="5" placeholder="vowels, titles, images, pockets, ad-libs, turns"></textarea>
+                </label>
+              </div>
+
+              <div class="flow-action-row">
+                <button class="primary-action" id="flowCaptureMoment" type="button">
+                  <svg><use href="#icon-pen"></use></svg>
+                  Save Take
+                </button>
+                <button class="secondary-action" id="flowShufflePrompt" type="button">
+                  <svg><use href="#icon-repeat"></use></svg>
+                  Next Card
+                </button>
+                <button class="secondary-action" id="flowSendToNotebook" type="button">
+                  <svg><use href="#icon-bookmark"></use></svg>
+                  Send to Pad
+                </button>
+                <button class="secondary-action" id="flowDistillStructure" type="button">
+                  <svg><use href="#icon-sliders"></use></svg>
+                  Shape
+                </button>
+              </div>
+
+              <div class="flow-capture-list" id="flowCaptureList"></div>
+            </section>
+
+            <aside class="tool-panel create-structure-panel" data-create-panel="structure">
+              <div class="panel-heading">
+                <div>
+                  <span class="eyebrow">Structure helper</span>
+                  <h2>Choose a song shape</h2>
+                </div>
+                <span class="score-pill" id="createStructureScore">0/0</span>
+              </div>
+
+              <div class="create-template-tabs" id="createTemplateTabs"></div>
+              <div class="bar-timing-controls">
+                <label>
+                  BPM
+                  <input id="createBpm" type="number" min="40" max="220" step="1" value="92" />
+                </label>
+                <div class="bar-timing-summary" id="barTimingSummary"></div>
+              </div>
+              <div class="bar-timeline" id="barTimeline"></div>
+              <div class="create-structure-map" id="createStructureMap"></div>
+            </aside>
+
+            <aside class="tool-panel create-coach-panel" data-create-panel="coach">
+              <div class="panel-heading">
+                <div>
+                  <span class="eyebrow">Writing coach</span>
+                  <h2>Next useful moves</h2>
+                </div>
+              </div>
+              <div class="create-coach-list" id="createCoachList"></div>
+            </aside>
+
+            <section class="tool-panel genre-profile-panel" data-create-panel="genre">
+              <div class="panel-heading">
+                <div>
+                  <span class="eyebrow">Genre DNA</span>
+                  <h2>Write inside the right rules</h2>
+                </div>
+              </div>
+              <div class="genre-profile-tabs" id="genreProfileTabs"></div>
+              <div class="genre-profile-detail" id="genreProfileDetail"></div>
+            </section>
+            </div>
+          </div>
+        </section>
+
+        <section class="view" id="pros" aria-labelledby="viewTitle">
+          <div class="pros-shell">
+            <section class="pros-hero-panel">
+              <div>
+                <span class="eyebrow">How the pros do it</span>
+                <h2>Study methods, not mythology.</h2>
+                <p>Each playbook now starts with guided listening: suggested records, official streaming-player slots, timestamp prompts, and the producer move to steal without copying the artist&apos;s context.</p>
+              </div>
+              <div class="pros-audio-disclaimer">
+                <strong>Audio-first study.</strong>
+                <span>Use suggested records as the curriculum, then attach official Spotify, Apple Music, SoundCloud, or YouTube players for real-record listening.</span>
+              </div>
+            </section>
+
+            <div class="pros-layout">
+              <aside class="tool-panel pro-selector">
+                <div class="panel-heading">
+                <div>
+                  <span class="eyebrow">Playbooks</span>
+                  <h2>Choose a method</h2>
+                </div>
+              </div>
+              <div class="pro-filters" id="proFilters"></div>
+              <div class="pro-list" id="proList"></div>
+            </aside>
+
+              <section class="pro-detail" id="proDetail"></section>
+            </div>
+          </div>
+
+          <audio id="proAudioElement" preload="metadata"></audio>
+        </section>
+
+        <section class="view" id="workshop" aria-labelledby="viewTitle">
+          <div class="workshop-grid">
+            <aside class="tool-panel workshop-sidebar">
+              <div class="panel-heading">
+                <div>
+                  <span class="eyebrow" id="workshopGenreLabel">Beat to Song</span>
+                  <h2 id="workshopPathTitle">Competency path</h2>
+                </div>
+              </div>
+              <div class="workshop-step-list" id="workshopSteps"></div>
+              <div class="workshop-mini-path">
+                <span class="eyebrow">30-day intensive</span>
+                <div class="mini-path-grid">
+                  <span>Week 1<br /><strong>Concepts + hooks</strong></span>
+                  <span>Week 2<br /><strong>Lyrics + toplines</strong></span>
+                  <span>Week 3<br /><strong>Structure + arrangement</strong></span>
+                  <span>Week 4<br /><strong>Finish records</strong></span>
+                </div>
+              </div>
+            </aside>
+
+            <section class="workshop-main">
+              <section class="tool-panel lesson-panel" id="workshopLesson"></section>
+
+              <section class="tool-panel workshop-drill">
+                <div class="panel-heading">
+                  <div>
+                    <span class="eyebrow">Apply it</span>
+                    <h2>One-page song blueprint</h2>
+                  </div>
+                  <button class="ghost-button" id="generateBlueprint" type="button">
+                    <svg><use href="#icon-sliders"></use></svg>
+                    Score
+                  </button>
+                </div>
+
+                <div class="workshop-form-grid">
+                  <label>
+                    Emotional lane
+                    <select id="blueprintLane">
+                      <option>Desire</option>
+                      <option selected>Loss</option>
+                      <option>Flex</option>
+                      <option>Transformation</option>
+                      <option>Nostalgia</option>
+                      <option>Seduction</option>
+                      <option>Escapism</option>
+                    </select>
+                  </label>
+                  <label>
+                    Genre system
+                    <select id="blueprintGenre">
+                      <option selected>R&B</option>
+                      <option>Soul</option>
+                      <option>Neo-Soul</option>
+                      <option>Pop</option>
+                      <option>Dance-Pop</option>
+                      <option>Singer-Songwriter Pop</option>
+                      <option>Alt-Pop</option>
+                      <option>Pop-R&B</option>
+                      <option>Hip-Hop</option>
+                      <option>Melodic Rap</option>
+                      <option>Drill</option>
+                      <option>Country</option>
+                      <option>Gospel</option>
+                      <option>Alternative</option>
+                    </select>
+                  </label>
+                </div>
+
+                <label>
+                  Raw producer idea
+                  <textarea id="rawIdeaInput" rows="2">A moody late-night loop with pretty chords and a bounce, but I do not know what the artist should say yet.</textarea>
+                </label>
+
+                <div class="workshop-form-grid">
+                  <label>
+                    Specific situation
+                    <textarea id="situationInput" rows="2">trying to act detached after realizing they already moved on</textarea>
+                  </label>
+                  <label>
+                    Contradiction or tension
+                    <textarea id="tensionInput" rows="2">I say I am fine, but I still check in late</textarea>
+                  </label>
+                </div>
+
+                <div class="workshop-form-grid">
+                  <label>
+                    Working title
+                    <input id="blueprintTitle" type="text" value="Late Check-In" />
+                  </label>
+                  <label>
+                    Hook phrase
+                    <input id="blueprintHook" type="text" value="I still check in late" />
+                  </label>
+                </div>
+
+                <div class="workshop-form-grid">
+                  <label>
+                    Concrete detail
+                    <textarea id="detailInput" rows="2">the phone lights my face in the car</textarea>
+                  </label>
+                  <label>
+                    Listener should remember
+                    <textarea id="replayInput" rows="2">the title phrase, the silence before it, and the empty-space groove</textarea>
+                  </label>
+                </div>
+
+                <div class="workshop-form-grid">
+                  <label>
+                    Section contrast
+                    <select id="structureInput">
+                      <option>Hook arrives first</option>
+                      <option selected>Verse to pre lift to hook</option>
+                      <option>Two verses before hook</option>
+                      <option>Bridge strips down</option>
+                      <option>Vamp extends the emotional payoff</option>
+                    </select>
+                  </label>
+                  <label>
+                    Production risk
+                    <select id="productionRiskInput">
+                      <option selected>Too many elements during the hook</option>
+                      <option>No payoff after the loop returns</option>
+                      <option>Chords are prettier than the concept</option>
+                      <option>Drums fight the vocal pocket</option>
+                      <option>No sonic identifier</option>
+                    </select>
+                  </label>
+                </div>
+
+                <div class="button-row">
+                  <button class="primary-action" id="saveBlueprint" type="button">
+                    <svg><use href="#icon-bookmark"></use></svg>
+                    Save Blueprint
+                  </button>
+                  <button class="secondary-action" id="sendBlueprintDoctor" type="button">
+                    <svg><use href="#icon-stethoscope"></use></svg>
+                    Send to Song Doctor
+                  </button>
+                </div>
+              </section>
+            </section>
+
+            <aside class="blueprint-panel" id="blueprintPanel" aria-live="polite"></aside>
+          </div>
+        </section>
+
+        <section class="view" id="cases" aria-labelledby="viewTitle">
+          <div class="split-layout">
+            <aside class="case-list-panel">
+              <div class="panel-heading">
+                <div>
+                  <span class="eyebrow">Hit anatomy</span>
+                  <h2>Modern records</h2>
+                </div>
+              </div>
+              <div class="filter-chips" id="caseFilters"></div>
+              <div class="case-list" id="caseList"></div>
+            </aside>
+
+            <section class="case-detail" id="caseDetail"></section>
+          </div>
+        </section>
+
+        <section class="view" id="risk" aria-labelledby="viewTitle">
+          <div class="risk-lab-grid">
+            <section class="tool-panel risk-hero-panel">
+              <div>
+                <span class="eyebrow">Creative Risk Lab</span>
+                <h2>Study the records that should not have worked, then learn why they did.</h2>
+                <p>Use these records to separate useful risk from random weirdness: the risk must sharpen the song, reveal the artist, or create a new listening behavior.</p>
+              </div>
+              <div class="risk-meter" aria-hidden="true">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </section>
+
+            <aside class="case-list-panel risk-list-panel">
+              <div class="panel-heading">
+                <div>
+                  <span class="eyebrow">Risk files</span>
+                  <h2>Unorthodox popular records</h2>
+                </div>
+              </div>
+              <div class="filter-chips" id="riskFilters"></div>
+              <div class="case-list" id="riskList"></div>
+            </aside>
+
+            <section class="case-detail risk-detail" id="riskDetail"></section>
+          </div>
+        </section>
+
+        <section class="view" id="session" aria-labelledby="viewTitle">
+          <div class="session-greats-grid">
+            <section class="tool-panel session-hero-panel">
+              <div>
+                <span class="eyebrow">Session Greats</span>
+                <h2>The invisible musicians who made records feel expensive, human, and undeniable.</h2>
+                <p>Study the players behind the records: keyboard hooks, bass motion, drum pocket, guitar personality, and percussion color. This module is about learning what elite musicians add before the mix ever starts.</p>
+              </div>
+              <div class="session-hero-stat">
+                <strong id="sessionGreatsCount">0</strong>
+                <span>players shown</span>
+              </div>
+            </section>
+
+            <section class="tool-panel session-filter-panel">
+              <div class="panel-heading">
+                <div>
+                  <span class="eyebrow">Choose a chair</span>
+                  <h2>Filter by musical role.</h2>
+                </div>
+              </div>
+              <div class="session-filter-row" id="sessionFilters"></div>
+            </section>
+
+            <section class="session-player-grid" id="sessionPlayerGrid"></section>
+
+            <section class="tool-panel session-collectives-panel">
+              <div class="panel-heading">
+                <div>
+                  <span class="eyebrow">Studio ecosystems</span>
+                  <h2>The rooms behind the records.</h2>
+                </div>
+              </div>
+              <div class="session-collective-grid" id="sessionCollectiveGrid"></div>
+            </section>
+          </div>
+        </section>
+
+        <section class="view" id="mixguide" aria-labelledby="viewTitle">
+          <div class="mix-guide-grid">
+            <section class="tool-panel mix-guide-hero">
+              <div>
+                <span class="eyebrow">Engineer Benchmarks</span>
+                <h2>Translate the song by style, not by generic loudness.</h2>
+                <p>Each style has a different center of gravity. Use these targets to decide what should feel close, wide, bright, heavy, dry, compressed, human, or polished.</p>
+              </div>
+              <div class="mix-guide-meter" aria-hidden="true">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </section>
+
+            <section class="mix-fundamentals-grid" id="mixFundamentalsGrid"></section>
+
+            <aside class="tool-panel mix-guide-style-panel">
+              <div class="panel-heading">
+                <div>
+                  <span class="eyebrow">Style targets</span>
+                  <h2>Choose the playback world.</h2>
+                </div>
+              </div>
+              <div class="mix-guide-style-list" id="mixGuideStyleList"></div>
+            </aside>
+
+            <section class="mix-guide-detail" id="mixGuideDetail"></section>
+          </div>
+        </section>
+
+        <section class="view" id="audio" aria-labelledby="viewTitle">
+          <div class="audio-grid">
+            <section class="tool-panel audio-workbench">
+              <div class="panel-heading">
+                <div>
+                  <span class="eyebrow">Audio Lab</span>
+                  <h2>Map the song while it plays</h2>
+                </div>
+                <button class="ghost-button" id="loadDemoGroove" type="button">
+                  <svg><use href="#icon-spark"></use></svg>
+                  Demo Groove
+                </button>
+              </div>
+
+              <label class="upload-zone" for="audioFileInput">
+                <input id="audioFileInput" type="file" accept="audio/*" />
+                <span class="upload-icon"><svg><use href="#icon-upload"></use></svg></span>
+                <span>
+                  <strong>Upload beat or demo</strong>
+                  <small>Audio stays local in this browser.</small>
+                </span>
+              </label>
+
+              <audio id="audioElement" preload="metadata"></audio>
+
+              <div class="track-strip">
+                <div>
+                  <span class="eyebrow">Now playing</span>
+                  <strong id="trackName">No track loaded</strong>
+                </div>
+                <div class="track-readout">
+                  <span id="trackTime">0:00 / 0:00</span>
+                  <span id="trackBpm">BPM --</span>
+                </div>
+              </div>
+
+              <div class="waveform-shell">
+                <canvas id="waveformCanvas" width="1200" height="260" aria-label="Audio waveform timeline"></canvas>
+                <div class="playhead" id="playhead"></div>
+              </div>
+
+              <div class="transport-row">
+                <button class="icon-button" id="backFive" type="button" aria-label="Skip back 5 seconds">
+                  <svg><use href="#icon-skip-back"></use></svg>
+                </button>
+                <button class="primary-action" id="playPause" type="button">
+                  <svg><use href="#icon-play"></use></svg>
+                  Play
+                </button>
+                <button class="icon-button" id="forwardFive" type="button" aria-label="Skip forward 5 seconds">
+                  <svg><use href="#icon-skip-forward"></use></svg>
+                </button>
+                <button class="secondary-action" id="loopToggle" type="button">
+                  <svg><use href="#icon-repeat"></use></svg>
+                  Loop Off
+                </button>
+                <label class="volume-control">
+                  Volume
+                  <input id="volumeControl" type="range" min="0" max="1" step="0.01" value="0.85" />
+                </label>
+              </div>
+
+              <div class="audio-control-grid">
+                <label>
+                  Loop start
+                  <input id="loopStart" type="number" min="0" step="0.1" value="0" />
+                </label>
+                <label>
+                  Loop end
+                  <input id="loopEnd" type="number" min="0" step="0.1" value="8" />
+                </label>
+                <button class="secondary-action" id="setLoopFromPlayhead" type="button">
+                  <svg><use href="#icon-sliders"></use></svg>
+                  Set Loop
+                </button>
+              </div>
+
+              <div class="marker-form">
+                <label>
+                  Marker
+                  <select id="markerType">
+                    <option>Intro</option>
+                    <option>Verse</option>
+                    <option>Pre</option>
+                    <option>Hook</option>
+                    <option>Bridge</option>
+                    <option>Outro</option>
+                    <option>Vocal Space</option>
+                    <option>Energy Lift</option>
+                    <option>Too Crowded</option>
+                  </select>
+                </label>
+                <label>
+                  Note
+                  <input id="markerNote" type="text" value="What should change here?" />
+                </label>
+                <button class="primary-action" id="addMarker" type="button">
+                  <svg><use href="#icon-flag"></use></svg>
+                  Add Marker
+                </button>
+              </div>
+            </section>
+
+            <aside class="audio-side">
+              <section class="tool-panel guide-panel">
+                <div class="panel-heading">
+                  <div>
+                    <span class="eyebrow">Playback coach</span>
+                    <h2 id="guideTitle">Load audio to begin</h2>
+                  </div>
+                  <span class="score-pill" id="guideStage">0:00</span>
+                </div>
+                <p id="guidePrompt">Upload a beat or load the demo groove, then play through the first pass and mark the hook pocket.</p>
+                <div class="guide-actions">
+                  <button class="secondary-action" id="saveAudioMap" type="button">
+                    <svg><use href="#icon-bookmark"></use></svg>
+                    Save Map
+                  </button>
+                  <button class="secondary-action" id="sendMapToDoctor" type="button">
+                    <svg><use href="#icon-stethoscope"></use></svg>
+                    Doctor It
+                  </button>
+                </div>
+              </section>
+
+              <section class="tool-panel">
+                <div class="panel-heading">
+                  <div>
+                    <span class="eyebrow">Song map</span>
+                    <h2>Markers</h2>
+                  </div>
+                  <span class="score-pill" id="markerCount">0</span>
+                </div>
+                <div class="marker-list" id="markerList"></div>
+              </section>
+            </aside>
+          </div>
+        </section>
+
+        <section class="view" id="analyst" aria-labelledby="viewTitle">
+          <div class="analyst-grid">
+            <section class="tool-panel analyst-input-panel">
+              <div class="panel-heading">
+                <div>
+                  <span class="eyebrow">AI Song Analyst</span>
+                  <h2>Transcribe, map, and rate the song</h2>
+                </div>
+                <span class="score-pill" id="analystApiStatus">Checking API</span>
+              </div>
+
+              <div class="analyst-source-grid">
+                <label class="analysis-upload-zone" for="analysisAudioInput">
+                  <input id="analysisAudioInput" type="file" accept="audio/*,video/webm,video/mp4" />
+                  <span class="upload-icon"><svg><use href="#icon-upload"></use></svg></span>
+                  <span>
+                    <strong>Upload recorded song or sketch</strong>
+                    <small id="analysisAudioName">No audio selected</small>
+                  </span>
+                </label>
+                <label class="choice-toggle">
+                  <input id="analysisUseCurrentTake" type="checkbox" checked />
+                  <span>Use current recorded take if no upload is selected</span>
+                </label>
+                <label class="choice-toggle">
+                  <input id="analysisOwnsRights" type="checkbox" checked />
+                  <span>I own or have permission to analyze this audio or lyric.</span>
+                </label>
+              </div>
+
+              <label>
+                Paste lyrics or transcript
+                <textarea id="analysisTranscriptInput" rows="8" placeholder="Paste your own lyrics, rough transcript, or recorded-take words here."></textarea>
+              </label>
+
+              <div class="form-grid">
+                <label>
+                  Concept
+                  <input id="analysisConceptInput" type="text" placeholder="What is the song about?" />
+                </label>
+                <label>
+                  Hook target
+                  <input id="analysisHookInput" type="text" placeholder="Title phrase or chorus payoff" />
+                </label>
+              </div>
+
+              <div class="button-row">
+                <button class="primary-action" id="runSongAnalysis" type="button">
+                  <svg><use href="#icon-spark"></use></svg>
+                  Analyze Song
+                </button>
+                <button class="secondary-action" id="sendAnalysisDoctor" type="button">
+                  <svg><use href="#icon-stethoscope"></use></svg>
+                  Send to Doctor
+                </button>
+                <button class="secondary-action" id="sendAnalysisPad" type="button">
+                  <svg><use href="#icon-pen"></use></svg>
+                  Send to Pad
+                </button>
+              </div>
+
+              <p class="analyst-note">For released commercial songs, analyze structure and short excerpts only. Full lyric transcription should be used for your own work or material you have permission to process.</p>
+            </section>
+
+            <section class="analyst-output-panel" id="analysisOutput" aria-live="polite">
+              <article class="tool-panel analyst-empty">
+                <span class="tag">No analysis yet</span>
+                <p>Record a take in Create, paste your own lyrics, or add a transcript, then run the analyst.</p>
+              </article>
+            </section>
+          </div>
+        </section>
+
+        <section class="view" id="doctor" aria-labelledby="viewTitle">
+          <div class="doctor-grid">
+            <form class="tool-panel doctor-form" id="doctorForm">
+              <div class="panel-heading">
+                <div>
+                  <span class="eyebrow">Song Doctor</span>
+                  <h2>Is it a beat, song, or record?</h2>
+                </div>
+              </div>
+
+              <label>
+                Working title
+                <input id="songTitle" type="text" value="Late check-in" />
+              </label>
+
+              <label>
+                One-sentence concept
+                <textarea id="conceptInput" rows="3">Trying to act detached after realizing the other person already moved on.</textarea>
+              </label>
+
+              <div class="form-grid">
+                <label>
+                  Hook phrase
+                  <input id="hookInput" type="text" value="I still check in late" />
+                </label>
+                <label>
+                  Listener should remember
+                  <input id="memoryInput" type="text" value="the title phrase and the empty-space groove" />
+                </label>
+              </div>
+
+              <label>
+                Stuck point
+                <select id="stuckInput">
+                  <option>No clear hook</option>
+                  <option selected>Loop does not evolve</option>
+                  <option>Lyrics feel vague</option>
+                  <option>Production crowds the vocal</option>
+                  <option>Chorus does not lift</option>
+                </select>
+              </label>
+
+              <div class="slider-grid">
+                <label>
+                  Concept clarity
+                  <input class="diagnostic-slider" id="clarityInput" type="range" min="1" max="10" value="6" />
+                  <span class="slider-value" data-for="clarityInput">6</span>
+                </label>
+                <label>
+                  Hook strength
+                  <input class="diagnostic-slider" id="hookStrengthInput" type="range" min="1" max="10" value="5" />
+                  <span class="slider-value" data-for="hookStrengthInput">5</span>
+                </label>
+                <label>
+                  Vocal space
+                  <input class="diagnostic-slider" id="spaceInput" type="range" min="1" max="10" value="7" />
+                  <span class="slider-value" data-for="spaceInput">7</span>
+                </label>
+                <label>
+                  Payoff
+                  <input class="diagnostic-slider" id="payoffInput" type="range" min="1" max="10" value="4" />
+                  <span class="slider-value" data-for="payoffInput">4</span>
+                </label>
+              </div>
+
+              <button class="primary-action" type="submit">
+                <svg><use href="#icon-stethoscope"></use></svg>
+                Run Diagnosis
+              </button>
+            </form>
+
+            <section class="diagnosis-output" id="diagnosisOutput" aria-live="polite"></section>
+          </div>
+        </section>
+
+        <section class="view" id="hooks" aria-labelledby="viewTitle">
+          <div class="hook-grid">
+            <section class="tool-panel">
+              <div class="panel-heading">
+                <div>
+                  <span class="eyebrow">Hook Sprint</span>
+                  <h2>Generate pressure-tested hook briefs</h2>
+                </div>
+              </div>
+
+              <div class="form-grid">
+                <label>
+                  Concept
+                  <input id="hookConcept" type="text" value="I want you back, but I need my pride intact" />
+                </label>
+                <label>
+                  Hook type
+                  <select id="hookType">
+                    <option>Melodic</option>
+                    <option>Rhythmic</option>
+                    <option>Lyrical</option>
+                    <option>Sonic</option>
+                  </select>
+                </label>
+              </div>
+
+              <div class="hook-options" id="hookOptions"></div>
+
+              <div class="button-row">
+                <button class="primary-action" id="generateHooks" type="button">
+                  <svg><use href="#icon-repeat"></use></svg>
+                  New Sprint
+                </button>
+                <button class="secondary-action" id="saveHookBrief" type="button">
+                  <svg><use href="#icon-bookmark"></use></svg>
+                  Save Brief
+                </button>
+              </div>
+            </section>
+
+            <section class="tool-panel">
+              <div class="panel-heading">
+                <div>
+                  <span class="eyebrow">Hook bench</span>
+                  <h2>Score your options</h2>
+                </div>
+              </div>
+              <div class="bench-list" id="benchList"></div>
+            </section>
+          </div>
+        </section>
+
+        <section class="view" id="glossary" aria-labelledby="viewTitle">
+          <div class="glossary-grid">
+            <section class="glossary-hero tool-panel">
+              <div>
+                <span class="eyebrow">Plain-English music language</span>
+                <h2>Pick a lane, then learn the language one layer at a time.</h2>
+                <p>Start with core terms, move into sound tools, study the gear, then connect it to producer identity.</p>
+              </div>
+              <div class="glossary-stat">
+                <strong id="glossaryCount">0</strong>
+                <span id="glossaryCountLabel">items loaded</span>
+              </div>
+            </section>
+
+            <section class="tool-panel glossary-index">
+              <button class="glossary-index-card is-active" data-glossary-section="terms" type="button">
+                <span>01</span>
+                <strong>Room Language</strong>
+                <small>Plain-English terms for songwriting, production, vocals, structure, and business.</small>
+              </button>
+              <button class="glossary-index-card" data-glossary-section="sound" type="button">
+                <span>02</span>
+                <strong>Sound Genome</strong>
+                <small>Instruments, machines, plugins, and effects grouped by sonic job.</small>
+              </button>
+              <button class="glossary-index-card" data-glossary-section="acoustics" type="button">
+                <span>03</span>
+                <strong>Acoustics & Design</strong>
+                <small>Frequency, space, stereo image, envelopes, texture, movement, and listening decisions.</small>
+              </button>
+              <button class="glossary-index-card" data-glossary-section="gear" type="button">
+                <span>04</span>
+                <strong>Gear Heads</strong>
+                <small>Pictures of classic tools plus records where their fingerprints matter.</small>
+              </button>
+              <button class="glossary-index-card" data-glossary-section="signature" type="button">
+                <span>05</span>
+                <strong>Signature Maps</strong>
+                <small>Hip-hop, R&B, pop, soul, country, rock, dub, dance, gospel, and label sound identities.</small>
+              </button>
+            </section>
+
+            <section class="tool-panel glossary-toolbar" data-glossary-panel="terms">
+              <label>
+                Search glossary
+                <input id="glossarySearch" type="search" placeholder="Try pocket, topline, vamp, publishing..." />
+              </label>
+              <div class="glossary-filter-row" id="glossaryFilters"></div>
+            </section>
+
+            <section class="glossary-results" id="glossaryResults" data-glossary-panel="terms"></section>
+
+            <section class="tool-panel sound-genome-panel" data-glossary-panel="sound">
+              <div class="panel-heading">
+                <div>
+                  <span class="eyebrow">Producer Sound Genome</span>
+                  <h2>Instruments, machines, plugins, effects, and signature sounds.</h2>
+                </div>
+                <span class="score-pill" id="soundGenomeCount">0 tools</span>
+              </div>
+              <div class="sound-genome-controls" id="soundGenomeFilters"></div>
+              <div class="sound-genome-grid" id="soundGenomeGrid"></div>
+            </section>
+
+            <section class="tool-panel acoustic-design-panel" data-glossary-panel="acoustics">
+              <div class="panel-heading">
+                <div>
+                  <span class="eyebrow">Acoustics & Sound Design</span>
+                  <h2>Learn why sounds feel close, huge, warm, harsh, expensive, intimate, or tiring.</h2>
+                </div>
+                <span class="score-pill" id="acousticDesignCount">0 lessons</span>
+              </div>
+              <div class="acoustic-topic-controls" id="acousticTopicFilters"></div>
+              <div class="acoustic-design-grid" id="acousticDesignGrid"></div>
+            </section>
+
+            <section class="tool-panel gear-heads-panel" data-glossary-panel="gear">
+              <div class="panel-heading">
+                <div>
+                  <span class="eyebrow">Gear Heads</span>
+                  <h2>See the machines, hear the records, learn the sonic fingerprint.</h2>
+                </div>
+              </div>
+              <div class="gear-heads-grid" id="gearHeadsGrid"></div>
+            </section>
+
+            <section class="tool-panel signature-sounds-panel" data-glossary-panel="signature">
+              <div class="panel-heading">
+                <div>
+                  <span class="eyebrow">Signature Sound Map</span>
+                  <h2>How producers, labels, rooms, and scenes turn choices into identity.</h2>
+                </div>
+              </div>
+              <div class="signature-sound-grid" id="signatureSoundGrid"></div>
+            </section>
+          </div>
+        </section>
+
+        <section class="view" id="vault" aria-labelledby="viewTitle">
+          <div class="vault-grid">
+            <section class="tool-panel">
+              <div class="panel-heading">
+                <div>
+                  <span class="eyebrow">Reference Vault</span>
+                  <h2>Save the moves worth studying</h2>
+                </div>
+              </div>
+
+              <form id="referenceForm" class="reference-form">
+                <div class="form-grid">
+                  <label>
+                    Reference title
+                    <input id="refTitle" type="text" placeholder="Song, session, or archetype" />
+                  </label>
+                  <label>
+                    Use case
+                    <input id="refUse" type="text" placeholder="Sparse chorus lift, intimate verse, quotable flex" />
+                  </label>
+                </div>
+                <label>
+                  Replay reason
+                  <textarea id="refReplay" rows="3" placeholder="Why would someone come back to this?"></textarea>
+                </label>
+                <button class="primary-action" type="submit">
+                  <svg><use href="#icon-plus"></use></svg>
+                  Add Reference
+                </button>
+              </form>
+            </section>
+
+            <section class="reference-board" id="referenceBoard"></section>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="app.js" defer></script>
+  </body>
+</html>
