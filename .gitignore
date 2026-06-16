@@ -1,12 +1,36 @@
-# Secrets — NEVER commit. The real OpenAI key lives here.
+# Secrets — never commit. The real OpenAI key lives in .env (untracked).
 .env
 .env.local
 .env.*.local
 
-# Dependencies (none required, but just in case)
+# Dependencies and environments
 node_modules/
+.venv/
+package-lock.json
 
 # OS / editor noise
 .DS_Store
 *.log
 .claude/launch.json
+
+# Local tooling: build and generator scripts (not part of the app)
+build-*.mjs
+*.py
+
+# Generated presentation assets and personal guides (kept out of the repo)
+*-carousel.html
+*-carousel.pdf
+*-slide-*.html
+*-slide-*.png
+slide-*.html
+slide-*.png
+*contact-sheet.html
+*contact-sheet.png
+*-playbook.html
+*-playbook.pdf
+*_PLAYBOOK.md
+endcard.html
+codebase-guide*.html
+
+# Local working drafts
+SONGLAB_MVP_PRD.md
