@@ -9110,6 +9110,8 @@ async function startSketchRecording() {
     });
     recorder.addEventListener("stop", finishSketchRecording);
     recorder.start(500);
+    // Activation signal: visitor actually recorded audio. Safe no-op if analytics unloaded.
+    window.umami?.track("activation", { app: "songlab", action: "recorded" });
     const transcribing = startSketchTranscription();
     updateSketchRecorderUI(true);
     if (!transcribing) {
@@ -9731,6 +9733,8 @@ async function runSongAnalysis() {
         filename: `${take.label || "songlab-take"}.webm`,
       };
     }
+    // Activation signal: visitor ran an analysis. Safe no-op if analytics unloaded.
+    window.umami?.track("activation", { app: "songlab", action: "analyzed" });
     const response = await fetch("/api/analyze-song", {
       method: "POST",
       headers: { "content-type": "application/json" },

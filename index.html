@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>SongLab OS</title>
     <link rel="stylesheet" href="styles.css" />
+    <!-- Cookieless analytics (Umami). server.mjs swaps in UMAMI_WEBSITE_ID at
+         serve time, or strips this tag entirely when the env var is unset. -->
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="__UMAMI_WEBSITE_ID__"></script>
   </head>
   <body>
     <svg class="svg-defs" aria-hidden="true">

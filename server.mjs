@@ -28,6 +28,14 @@ const port = Number(process.env.PORT || 4181);
 const apiKey = process.env.OPENAI_API_KEY || "";
 const analysisModel = process.env.OPENAI_ANALYSIS_MODEL || "gpt-4.1-mini";
 const transcribeModel = process.env.OPENAI_TRANSCRIBE_MODEL || "gpt-4o-mini-transcribe";
+// Cookieless analytics website id (public, not a secret). Injected into HTML at
+// serve time; when unset the analytics <script> tag is stripped so nothing breaks.
+const umamiWebsiteId = process.env.UMAMI_WEBSITE_ID || "";
+
+function injectAnalytics(html) {
+  if (umamiWebsiteId) return html.replaceAll("__UMAMI_WEBSITE_ID__", umamiWebsiteId);
+  return html.replace(/\s*<script[^>]*__UMAMI_WEBSITE_ID__[^>]*><\/script>/g, "");
+}
 
 const contentTypes = {
   ".html": "text/html; charset=utf-8",
@@ -257,6 +265,7 @@ async function handleAnalyze(req, res) {
     analysis.transcript = transcript;
     sendJson(res, 200, { analysis, apiEnabled: Boolean(apiKey) });
   } catch (error) {
+    console.error(`[analyze] error: ${error?.message || error}`);
     sendJson(res, 500, {
       error: error.message || "Song analysis failed.",
       fallback: localSongAnalysis({ transcript: "", source: "local" }),
@@ -275,9 +284,16 @@ async function serveStatic(req, res) {
     return;
   }
   try {
+    const ext = extname(filePath);
+    if (ext === ".html") {
+      const html = injectAnalytics(await readFile(filePath, "utf8"));
+      res.writeHead(200, { "content-type": contentTypes[".html"], "cache-control": "no-store" });
+      res.end(html);
+      return;
+    }
     const file = await readFile(filePath);
     res.writeHead(200, {
-      "content-type": contentTypes[extname(filePath)] || "application/octet-stream",
+      "content-type": contentTypes[ext] || "application/octet-stream",
       "cache-control": "no-store",
     });
     res.end(file);
@@ -288,7 +304,14 @@ async function serveStatic(req, res) {
 }
 
 const server = createServer(async (req, res) => {
+  const startedAt = Date.now();
   const url = new URL(req.url || "/", `http://${req.headers.host || "localhost"}`);
+  // One access-log line per request → Render Logs tab. Confirms requests reach
+  // the app and shows the referrer (traffic source) and any error status.
+  res.on("finish", () => {
+    const ref = req.headers.referer || "-";
+    console.log(`[req] ${req.method} ${url.pathname} ${res.statusCode} ${Date.now() - startedAt}ms ref=${ref}`);
+  });
   if (url.pathname === "/api/health") {
     sendJson(res, 200, { ok: true, apiEnabled: Boolean(apiKey), analysisModel, transcribeModel });
     return;
@@ -307,4 +330,5 @@ const server = createServer(async (req, res) => {
 server.listen(port, () => {
   console.log(`SongLab server running at http://127.0.0.1:${port}`);
   console.log(apiKey ? "AI analysis enabled." : "OPENAI_API_KEY not set. Using local heuristic analysis.");
+  console.log(umamiWebsiteId ? `Analytics enabled (umami ${umamiWebsiteId.slice(0, 8)}…).` : "Analytics disabled (UMAMI_WEBSITE_ID not set).");
 });
